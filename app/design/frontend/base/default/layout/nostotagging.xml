@@ -407,4 +407,10 @@
             </block>
         </reference>
     </checkout_klarna_success>
+
+    <!-- Email Recommendation Template -->
+    <email_recommendations>
+        <block type="nosto_tagging/email" name="email.recommendations"/>
+    </email_recommendations>
+
 </layout>
