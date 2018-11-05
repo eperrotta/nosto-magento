@@ -69,18 +69,23 @@ class Nosto_Tagging_Util_Product
     public static function toParentProducts(Mage_Catalog_Model_Product $product)
     {
         $parents = array();
+        $failedProducts = false;
         if ($product->getTypeId() === Mage_Catalog_Model_Product_Type::TYPE_SIMPLE) {
             /** @var Mage_Catalog_Model_Product_Type_Configurable $model */
             $model = Mage::getModel('catalog/product_type_configurable');
             $parentIds = $model->getParentIdsByChild($product->getId());
             if (!empty($parentIds)) {
                 foreach ($parentIds as $productId) {
-                    $configurable = Mage::getModel('catalog/product')->load($productId);
-                    $parents[] = $configurable;
+                    try {
+                        $configurable = Mage::getModel('catalog/product')->load($productId);
+                        $parents[] = $configurable;
+                    } catch (\Exception $e) {
+                        $failedProducts = true;
+                    }
                 }
             }
         }
-        if (empty($parents)) {
+        if (empty($parents) && $failedProducts === false) {
             $parents[] = $product;
         }
 
